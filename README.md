@@ -9,12 +9,26 @@ itself fails.
 It never signs or sends transactions — topping up the bond
 (`fund-bond-sol`) stays a manual operation.
 
+## Topping up the bond
+
+When the alert fires, fund the bond manually with the
+[institutional CLI](https://github.com/marinade-finance/validator-bonds/tree/main/packages/validator-bonds-cli-institutional):
+
+```bash
+validator-bonds-institutional fund-bond-sol <vote-account-address> \
+  --from <wallet-keypair> \
+  --amount <SOL> \
+  -u <rpc-url>
+```
+
+Marinade recommends keeping the bond funded at ~1 SOL per 1,000 SOL staked.
+
 ## Image
 
-Built and pushed to GHCR on every push to `main`:
+The GHCR package is private — build the image yourself:
 
-```
-ghcr.io/kevredlabs/marinade-select-monitoring:latest
+```bash
+docker build -t marinade-select-monitoring .
 ```
 
 ## Configuration
@@ -38,7 +52,7 @@ docker run --rm \
   -e MIN_BALANCE_SOL=10 \
   -e RPC_URL=https://api.mainnet-beta.solana.com \
   --entrypoint check.sh \
-  ghcr.io/kevredlabs/marinade-select-monitoring:latest
+  marinade-select-monitoring
 ```
 
 ### docker compose
@@ -46,7 +60,7 @@ docker run --rm \
 ```yaml
 services:
   marinade-select-monitoring:
-    image: ghcr.io/kevredlabs/marinade-select-monitoring:latest
+    image: marinade-select-monitoring
     restart: unless-stopped
     environment:
       BOND_ADDRESS: Gvt8s5Bwnhg4G27VbnT1Zkfh7Jsztq6CNvZcc5anPonS
