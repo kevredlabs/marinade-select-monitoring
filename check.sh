@@ -52,7 +52,7 @@ fi
 log "bond $BOND_ADDRESS amountActive=$amount_active SOL (min=$MIN_BALANCE_SOL SOL)"
 
 if awk -v a="$amount_active" -v m="$MIN_BALANCE_SOL" 'BEGIN { exit !(a < m) }'; then
-  alert "bond $BOND_ADDRESS is underfunded: $amount_active SOL < $MIN_BALANCE_SOL SOL minimum. Top it up with fund-bond-sol."
+  alert "bond $BOND_ADDRESS is underfunded: $(printf '%.2f' "$amount_active") SOL < $MIN_BALANCE_SOL SOL minimum. Top it up with fund-bond-sol."
   exit 2
 fi
 
