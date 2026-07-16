@@ -1,6 +1,8 @@
-FROM node:22-alpine
+FROM node:22-slim
 
-RUN apk add --no-cache bash curl jq \
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends curl jq ca-certificates \
+  && rm -rf /var/lib/apt/lists/* \
   && npm install -g @marinade.finance/validator-bonds-cli-institutional \
   && npm cache clean --force
 

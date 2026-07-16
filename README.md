@@ -23,7 +23,7 @@ ghcr.io/kevredlabs/marinade-select-monitoring:latest
 |---|---|---|---|
 | `BOND_ADDRESS` | yes | — | Bond account public key |
 | `MIN_BALANCE_SOL` | yes | — | Alert when `amountActive` is below this (SOL) |
-| `RPC_URL` | no | `https://api.mainnet-beta.solana.com` | Solana RPC endpoint (use your own) |
+| `RPC_URL` | yes | — | Solana RPC endpoint |
 | `TELEGRAM_BOT_TOKEN` | no | — | Telegram bot token; alerts are only logged if unset |
 | `TELEGRAM_CHAT_ID` | no | — | Telegram chat id to send alerts to |
 | `CHECK_INTERVAL_SECONDS` | no | `14400` | Seconds between checks (4h) |
@@ -36,6 +36,7 @@ One-off check:
 docker run --rm \
   -e BOND_ADDRESS=Gvt8s5Bwnhg4G27VbnT1Zkfh7Jsztq6CNvZcc5anPonS \
   -e MIN_BALANCE_SOL=10 \
+  -e RPC_URL=https://api.mainnet-beta.solana.com \
   --entrypoint check.sh \
   ghcr.io/kevredlabs/marinade-select-monitoring:latest
 ```
@@ -69,3 +70,5 @@ services:
   `amountToWithdraw`).
 - The CLI formats amounts as strings (e.g. `"12.345 SOLs"`); `check.sh`
   strips the unit before comparing.
+- CLI documentation:
+  [@marinade.finance/validator-bonds-cli-institutional](https://github.com/marinade-finance/validator-bonds/tree/main/packages/validator-bonds-cli-institutional)

@@ -5,7 +5,7 @@ set -uo pipefail
 
 : "${BOND_ADDRESS:?BOND_ADDRESS is required}"
 : "${MIN_BALANCE_SOL:?MIN_BALANCE_SOL is required}"
-RPC_URL="${RPC_URL:-https://api.mainnet-beta.solana.com}"
+: "${RPC_URL:?RPC_URL is required}"
 TELEGRAM_BOT_TOKEN="${TELEGRAM_BOT_TOKEN:-}"
 TELEGRAM_CHAT_ID="${TELEGRAM_CHAT_ID:-}"
 
@@ -27,10 +27,15 @@ $msg" '{chat_id: $chat, text: $text}')" \
   fi
 }
 
+# Parse stdout only: the CLI writes warnings (e.g. "bigint: Failed to load
+# bindings") to stderr, which would corrupt the JSON.
+stderr_file="$(mktemp)"
+trap 'rm -f "$stderr_file"' EXIT
 if ! output="$(validator-bonds-institutional show-bond "$BOND_ADDRESS" \
-  --with-funding -u "$RPC_URL" -f json 2>&1)"; then
+  --with-funding -u "$RPC_URL" -f json 2>"$stderr_file")"; then
+  errors="$(cat "$stderr_file")"
   alert "bond check failed for $BOND_ADDRESS:
-${output:0:1500}"
+${errors:0:1500}"
   exit 1
 fi
 
