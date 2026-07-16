@@ -1,6 +1,6 @@
 # marinade-select-monitoring
 
-Read-only monitoring for a Marinade institutional (SelectStake) validator bond
+Read-only monitoring for a Marinade institutional (Marinade Select) validator bond
 account. Every 4 hours (configurable) it runs
 `validator-bonds-institutional show-bond` and sends a Telegram alert if the
 bond's active funded balance drops below a minimum threshold, or if the check
@@ -80,8 +80,7 @@ services:
 
 - The threshold compares against `amountActive` from
   `show-bond --with-funding`. Verify against your bond's actual JSON output
-  that this is the field you care about (vs. `amountAtSettlements`,
-  `amountToWithdraw`).
+  that this is the field you care about.
 - The CLI formats amounts as strings (e.g. `"12.345 SOLs"`); `check.sh`
   strips the unit before comparing.
 - CLI documentation:
