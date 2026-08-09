@@ -52,7 +52,13 @@ fi
 log "bond $BOND_ADDRESS amountActive=$amount_active SOL (min=$MIN_BALANCE_SOL SOL)"
 
 if awk -v a="$amount_active" -v m="$MIN_BALANCE_SOL" 'BEGIN { exit !(a < m) }'; then
-  alert "bond $BOND_ADDRESS is underfunded: $(printf '%.2f' "$amount_active") SOL < $MIN_BALANCE_SOL SOL minimum. Top it up with fund-bond-sol."
+  alert "bond $BOND_ADDRESS is underfunded: $(printf '%.2f' "$amount_active") SOL < $MIN_BALANCE_SOL SOL minimum.
+
+Commands to run:
+
+\$ validator-bonds-institutional fund-bond-sol $BOND_ADDRESS -k mainnet-validator-keypair.json --from mainnet-validator-keypair.json --amount 10 -v
+
+\$ validator-bonds-institutional show-bond $BOND_ADDRESS --with-funding"
   exit 2
 fi
 
