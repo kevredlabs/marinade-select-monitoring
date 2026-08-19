@@ -28,13 +28,17 @@ $msg" '{chat_id: $chat, text: $text}')" \
 }
 
 # Parse stdout only: the CLI writes warnings (e.g. "bigint: Failed to load
-# bindings") to stderr, which would corrupt the JSON.
+# bindings") to stderr, which would corrupt the JSON. Real errors are logged
+# by pino on stdout, so failure alerts must include both streams.
 stderr_file="$(mktemp)"
 trap 'rm -f "$stderr_file"' EXIT
-if ! output="$(validator-bonds-institutional show-bond "$BOND_ADDRESS" \
-  --with-funding -u "$RPC_URL" -f json 2>"$stderr_file")"; then
+cli_status=0
+output="$(validator-bonds-institutional show-bond "$BOND_ADDRESS" \
+  --with-funding -u "$RPC_URL" -f json 2>"$stderr_file")" || cli_status=$?
+if [[ "$cli_status" -ne 0 ]]; then
   errors="$(cat "$stderr_file")"
-  alert "bond check failed for $BOND_ADDRESS:
+  alert "bond check failed for $BOND_ADDRESS (exit $cli_status):
+${output:0:1500}
 ${errors:0:1500}"
   exit 1
 fi
